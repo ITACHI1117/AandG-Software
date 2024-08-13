@@ -468,9 +468,9 @@ def run_program():
     #                                    state="disabled",
     #                                    command=continue_run_program_auto_epin_background)
     #     continue_push_epin.pack(padx=(0, 0), pady=10, )
-    #
-    # my_label = tb.Label(my_frame, text="Show Chrome Window", bootstyle=Theme[2], font=("Helvetica", 12))
-    # my_label.pack(pady=10, padx=(20, 20))
+
+    my_label = tb.Label(my_frame, text="Show Chrome Window", bootstyle=Theme[2], font=("Helvetica", 12))
+    my_label.pack(pady=10, padx=(20, 20))
 
     show_window_button = tb.Button(my_frame, text="ON", state="enabled", bootstyle="success", width=20,
                                    command=window_satus_off)

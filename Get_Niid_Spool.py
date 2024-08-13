@@ -13,7 +13,8 @@ from Change_Sheet_Name import change_sheet_name
 
 
 def get_niid_spool(start_date,end_date,SHOW_WINDOW,LINK):
-    print(LINK)
+    print(LINK[0])
+    print(LINK[1])
     #enviroment variables
     load_dotenv()
     THIRD_PARTY_PLATFORM_LINK = os.getenv("3RD_PARTY_PLATFORM_LINK")
@@ -58,7 +59,7 @@ def get_niid_spool(start_date,end_date,SHOW_WINDOW,LINK):
     # driver.minimize_window()
 
     # Send a get request to the url
-    driver.get("https://aginsuranceapplications.com/card/Index.aspx")#LINK[0])
+    driver.get(LINK[0])
     time.sleep(0.2)
     print('Loaded')
     # https: // auth.geeksforgeeks.org /
