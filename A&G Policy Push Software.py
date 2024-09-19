@@ -9,6 +9,7 @@ from Chek_unfinshed_push import check_last_push_file, check_last_push_file_epin
 from Delete_file_when_done import delete, delete_last_push_date, delete_last_push_date_epin
 from Error_messges import openNewWindow
 from Get_Niid_Spool import get_niid_spool
+from Get_Niid_Spool_byPolicyNumber import get_niid_spool_byPolicyNumber
 from Get_last_push_dates import get_last_push_dates
 from Get_last_push_dates_epin import get_last_push_dates_epin
 from Push_to_Niid import Push_to_Niid
@@ -309,6 +310,76 @@ def run_program():
             delete()
             Reg_update_button.config(state="enabled")
 
+    def update_byPolicyNumber():
+        # enviroment variables
+        load_dotenv()
+        THIRD_PARTY_PLATFORM_LINK = os.getenv("3RD_PARTY_PLATFORM_LINK")
+        THIRD_PARTY_PLATFORM_EMAIL = os.getenv("3RD_PARTY_PLATFORM_EMAIL")
+        THIRD_PARTY_DETAILS = [THIRD_PARTY_PLATFORM_LINK, THIRD_PARTY_PLATFORM_EMAIL]
+        # my_progress.start()
+        error_message.config(text="Working on it👩‍💻", bootstyle="success")
+        policy_push_button.config(state="disabled")
+        downloads_path = Path.home() / "Downloads"
+        file_path = f"{downloads_path}/NIID Spool.xlsx"
+
+        # Getting the date from the input
+        POLICY_NUMBER = policy_number.get()
+
+        # Getting error message if the date format is wrong
+        ErrorMessage = "Enter a valid Date"
+        if (POLICY_NUMBER == ""):
+            error_message.config(text=ErrorMessage, bootstyle="danger")
+            policy_push_button.config(state="enabled")
+            time.sleep(3)
+            error_message.config(text="")
+        else:
+            policy_push_button.config(state="disabled")
+            # Getting the formated date
+            # formated_start_date = format_date(edited_start_date)
+            # formated_end_date = format_date(edited_end_date)
+            #Getting the file from A&G
+            try:
+                policy_push_button.config(state="disabled")
+                error_message.config(text="Geting the file👩‍💻", bootstyle="success")
+                # Deleting the NIIID File If it exists
+                delete()
+                get_niid_spool_byPolicyNumber(POLICY_NUMBER, SHOW_WINDOW, THIRD_PARTY_DETAILS)
+                error_message.config(text="Edditing Sheet‍💻", bootstyle="success")
+                change_sheet_name()
+            except Exception as e:
+                if e:
+                    print(e)
+                    error_message.config(text="There was an error", bootstyle="danger")
+                    policy_push_button.config(state="enabled")
+                    delete()
+                    time.sleep(3)
+                    error_message.config(text="", )
+                    return
+
+            print("gotten Data")
+            try:
+                error_message.config(text="Pushing to NIID👩‍💻", bootstyle="success")
+                errmessage = Push_to_Niid(SHOW_WINDOW)
+                openNewWindow(root, errmessage)
+            except Exception as e:
+                if e:
+                    print(e)
+                    error_message.config(text="There was an error", bootstyle="danger")
+                    policy_push_button.config(state="enabled")
+                    delete()
+                    time.sleep(3)
+                    error_message.config(text="", )
+                    return
+
+            error_message.config(text="Done✅", bootstyle="success")
+            time.sleep(3)
+            error_message.config(text="")
+            print("Done")
+            #deleting file when done
+            delete()
+            policy_push_button.config(state="enabled")
+
+
     def update_epin():
         # enviroment variables
         load_dotenv()
@@ -388,6 +459,12 @@ def run_program():
         thread = threading.Thread(target=update_epin)
         thread.start()
 
+    def run_function_in_background_update_byPolicyNumber():
+        # Create a thread to run the long_running_function
+        thread = threading.Thread(target=update_byPolicyNumber)
+        thread.start()
+
+
     # Push Automatically run in background thread
     # def run_program_auto():
     #     # Create a thread to run the long_running_function
@@ -418,10 +495,10 @@ def run_program():
     my_label = tb.Label(my_frame, text="Push Manually", bootstyle="default", font=("Inter", 18))
     my_label.pack(pady=(20, 1), padx=(20, 20))
 
-    start_date = tb.DateEntry(my_frame, bootstyle="dark", dateformat=('%d-%b-%y'))
+    start_date = tb.DateEntry(my_frame, bootstyle="danger", dateformat=('%d-%b-%y'))
     start_date.pack(pady=5)
 
-    end_date = tb.DateEntry(my_frame, bootstyle="dark", dateformat=('%d-%b-%y'))
+    end_date = tb.DateEntry(my_frame, bootstyle="danger", dateformat=('%d-%b-%y'))
     end_date.pack(pady=5)
 
     Reg_update_button = tb.Button(my_frame, bootstyle="danger", text="Push", width=30,
@@ -468,6 +545,18 @@ def run_program():
     #                                    state="disabled",
     #                                    command=continue_run_program_auto_epin_background)
     #     continue_push_epin.pack(padx=(0, 0), pady=10, )
+
+    my_label = tb.Label(my_frame, text="Push by Policy Number", bootstyle="default", font=("Inter", 18))
+    my_label.pack(pady=(20, 1), padx=(20, 20))
+
+   #Push by Policy Number
+    policy_number = tb.Entry(my_frame, bootstyle="default", width=30,)
+    policy_number.pack(pady=5)
+
+    policy_push_button = tb.Button(my_frame, bootstyle="danger", text="Push", width=30,
+                                   command=run_function_in_background_update_byPolicyNumber)
+    policy_push_button.pack(padx=0, pady=10,)
+
 
     my_label = tb.Label(my_frame, text="Show Chrome Window", bootstyle=Theme[2], font=("Helvetica", 12))
     my_label.pack(pady=10, padx=(20, 20))

@@ -14,7 +14,7 @@ from Change_Sheet_Name import change_sheet_name
 # Main Function
 
 
-def get_niid_spool(start_date,end_date,SHOW_WINDOW,LINK):
+def get_niid_spool_byPolicyNumber(POLICY_NUMBER,SHOW_WINDOW,LINK):
     #enviroment variables
     load_dotenv()
     THIRD_PARTY_PLATFORM_LINK = os.getenv("3RD_PARTY_PLATFORM_LINK")
@@ -92,23 +92,18 @@ def get_niid_spool(start_date,end_date,SHOW_WINDOW,LINK):
         # Find the fetch by policy button and click on it.
         driver.find_element(
             by="xpath",
-            value='//div[@class="col-md-12"]/select/option[5]').click()
+            value='//div[@class="col-md-12"]/select/option[3]').click()
         time.sleep(0.5)
 
         # Finds the input box by name in DOM tree to send
         # the provided start date to it
         policy_number = driver.find_element(
             by="xpath",
-            value='//div[@class="row"][3]/div/input')
-        policy_number.send_keys(start_date)
+            value='//div[@class="row"][2]/div/input')
+        policy_number.send_keys(POLICY_NUMBER)
         time.sleep(0.5)
         # Finds the input box by name in DOM tree to send
         # the provided end date to it
-        policy_number = driver.find_element(
-            by="xpath",
-            value='//div[@class="row"][3]/div[2]/input')
-        policy_number.send_keys(end_date)
-        time.sleep(0.5)
 
         # Find the Spool button and click on it.
         driver.find_element(

@@ -11,17 +11,19 @@ def Push_to_Niid(SHOW_WINDOW):
     NIID_EMAIL = os.getenv("NIID_EMAIL")
     NIID_PASSWORD = os.getenv("NIID_PASSWORD")
     NIID_LINK = os.getenv("NIID_LINK")
+
     # Provide the email and password
     email = NIID_EMAIL
     password = NIID_PASSWORD
     comapny_email = 'info@aginsuranceplc.com'
 
+    # Downaload path
     downloads_path = Path.home() / "Downloads"
     file_path = f"{downloads_path}/NIID Spool.xlsx"
 
-
+    # Driver options
     options = webdriver.ChromeOptions()
-    # options.add_argument('--headless')
+    options.add_argument(SHOW_WINDOW)
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     options.add_argument("--start-minimized")
     options.add_argument('--log-level=0')
