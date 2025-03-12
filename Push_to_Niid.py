@@ -24,8 +24,13 @@ def Push_to_Niid(SHOW_WINDOW):
     # Driver options
     options = webdriver.ChromeOptions()
     options.add_argument(SHOW_WINDOW)
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")  # Required if running on certain environments
+    options.add_argument("--disable-extensions")  # Disable extensions in headless mode
+    options.add_argument("--window-size=1920x1080")  # Set window size to ensure proper rendering
+    options.add_argument("--disable-dev-shm-usage")
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
-    options.add_argument("--start-minimized")
+    # options.add_argument("--start-minimized")
     options.add_argument('--log-level=0')
 
     # Provide the path of chromedriver present on your system.

@@ -1,8 +1,13 @@
 import time  #✅
-from tkinter import messagebox
+import queue
+
 import ttkbootstrap as tb
 import customtkinter
 import threading  #✅
+from datetime import datetime
+from tkinter import messagebox
+
+
 
 from Check_driver import Check_and_install_Updated_driver
 from Chek_unfinshed_push import check_last_push_file, check_last_push_file_epin
@@ -19,6 +24,7 @@ from dotenv import load_dotenv
 #
 from Write_logs import write_logs  #✅
 from Write_logs_epin import write_logs_epin  #✅
+from check_update import check_for_update
 from push_date import run  #✅
 from Change_Sheet_Name import change_sheet_name
 from write_last_date import write_last_push_date
@@ -58,7 +64,7 @@ def run_program():
     def window_satus_off():
         global SHOW_WINDOW
         show_window_button.config(bootstyle="secondary", text="OFF", command=window_satus_on)
-        SHOW_WINDOW = "--headless=new"
+        SHOW_WINDOW = "--headless"
 
     #Automatic Push Function
     # def run_auto_update():
@@ -201,6 +207,7 @@ def run_program():
     #     E_PIN_PLATFORM_EMAIL = os.getenv("E_PIN_PLATFORM_EMAIL")
     #     E_PIN_DETAILS = [E_PIN_PLATFORM_LINK, E_PIN_PLATFORM_EMAIL]
     #
+
     #     START_DATE, END_DATE = get_last_push_dates_epin()
     #     print(f"push dates {START_DATE},{END_DATE}")
     #     time.sleep(4)
@@ -249,6 +256,7 @@ def run_program():
         # my_progress.start()
         error_message.config(text="Working on it👩‍💻", bootstyle="success")
         Reg_update_button.config(state="disabled")
+        policy_push_button.config(state="disabled")
         downloads_path = Path.home() / "Downloads"
         file_path = f"{downloads_path}/NIID Spool.xlsx"
 
@@ -256,21 +264,35 @@ def run_program():
         input_start_date = start_date.entry.get()
         input_end_date = end_date.entry.get()
 
+        # Converting dates to objects for comparison
+        date_format = "%d-%b-%y"  # Day-Month-Year format
+        startDate = datetime.strptime(input_start_date, date_format)
+        endDate = datetime.strptime(input_end_date, date_format)
+        print(startDate)
+        print(endDate)
+
+
+
+
         # Getting error message if the date format is wrong
         ErrorMessage = "Enter a valid Date"
-        if (input_end_date < input_start_date):
+        if (endDate < startDate):
+            print(input_end_date + input_start_date)
             error_message.config(text=ErrorMessage, bootstyle="danger")
             Reg_update_button.config(state="enabled")
+            policy_push_button.config(state="enabled")
             time.sleep(3)
             error_message.config(text="")
         else:
             Reg_update_button.config(state="disabled")
+            policy_push_button.config(state="disabled")
             # Getting the formated date
             # formated_start_date = format_date(edited_start_date)
             # formated_end_date = format_date(edited_end_date)
             #Getting the file from A&G
             try:
                 Reg_update_button.config(state="disabled")
+                policy_push_button.config(state="disabled")
                 error_message.config(text="Geting the file👩‍💻", bootstyle="success")
                 # Deleting the NIIID File If it exists
                 delete()
@@ -282,6 +304,7 @@ def run_program():
                     print(e)
                     error_message.config(text="There was an error", bootstyle="danger")
                     Reg_update_button.config(state="enabled")
+                    policy_push_button.config(state="enabled")
                     delete()
                     time.sleep(3)
                     error_message.config(text="", )
@@ -297,6 +320,7 @@ def run_program():
                     print(e)
                     error_message.config(text="There was an error", bootstyle="danger")
                     Reg_update_button.config(state="enabled")
+                    policy_push_button.config(state="enabled")
                     delete()
                     time.sleep(3)
                     error_message.config(text="", )
@@ -309,6 +333,7 @@ def run_program():
             #deleting file when done
             delete()
             Reg_update_button.config(state="enabled")
+            policy_push_button.config(state="enabled")
 
     def update_byPolicyNumber():
         # enviroment variables
@@ -319,6 +344,7 @@ def run_program():
         # my_progress.start()
         error_message.config(text="Working on it👩‍💻", bootstyle="success")
         policy_push_button.config(state="disabled")
+        Reg_update_button.config(state="disabled")
         downloads_path = Path.home() / "Downloads"
         file_path = f"{downloads_path}/NIID Spool.xlsx"
 
@@ -326,20 +352,23 @@ def run_program():
         POLICY_NUMBER = policy_number.get()
 
         # Getting error message if the date format is wrong
-        ErrorMessage = "Enter a valid Date"
+        ErrorMessage = "Enter a valid Policy number"
         if (POLICY_NUMBER == ""):
             error_message.config(text=ErrorMessage, bootstyle="danger")
             policy_push_button.config(state="enabled")
+            Reg_update_button.config(state="enabled")
             time.sleep(3)
             error_message.config(text="")
         else:
             policy_push_button.config(state="disabled")
+            Reg_update_button.config(state="disabled")
             # Getting the formated date
             # formated_start_date = format_date(edited_start_date)
             # formated_end_date = format_date(edited_end_date)
             #Getting the file from A&G
             try:
                 policy_push_button.config(state="disabled")
+                Reg_update_button.config(state="disabled")
                 error_message.config(text="Geting the file👩‍💻", bootstyle="success")
                 # Deleting the NIIID File If it exists
                 delete()
@@ -351,6 +380,7 @@ def run_program():
                     print(e)
                     error_message.config(text="There was an error", bootstyle="danger")
                     policy_push_button.config(state="enabled")
+                    Reg_update_button.config(state="enabled")
                     delete()
                     time.sleep(3)
                     error_message.config(text="", )
@@ -366,6 +396,7 @@ def run_program():
                     print(e)
                     error_message.config(text="There was an error", bootstyle="danger")
                     policy_push_button.config(state="enabled")
+                    Reg_update_button.config(state="enabled")
                     delete()
                     time.sleep(3)
                     error_message.config(text="", )
@@ -378,6 +409,7 @@ def run_program():
             #deleting file when done
             delete()
             policy_push_button.config(state="enabled")
+            Reg_update_button.config(state="enabled")
 
 
     def update_epin():
@@ -451,19 +483,28 @@ def run_program():
     # Push Manally run in background thread
     def run_function_in_background():
         # Create a thread to run the long_running_function
-        thread = threading.Thread(target=update)
+        thread = threading.Thread(target=update, daemon=True)
         thread.start()
 
     def run_function_in_background_update_epin():
         # Create a thread to run the long_running_function
-        thread = threading.Thread(target=update_epin)
+        thread = threading.Thread(target=update_epin, daemon=True)
         thread.start()
 
     def run_function_in_background_update_byPolicyNumber():
         # Create a thread to run the long_running_function
-        thread = threading.Thread(target=update_byPolicyNumber)
+        thread = threading.Thread(target=update_byPolicyNumber, daemon=True)
         thread.start()
 
+    def run_check_and_update_software():
+        window = root
+        thread = threading.Thread(target=check_for_update, args=(window,), daemon=True)
+        thread.start()
+
+    # check_for_update(root)
+
+
+    run_check_and_update_software()
 
     # Push Automatically run in background thread
     # def run_program_auto():
@@ -577,3 +618,4 @@ def run_program():
 
 if __name__ == '__main__':
     run_program()
+

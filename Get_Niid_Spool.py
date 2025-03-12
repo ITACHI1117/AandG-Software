@@ -43,6 +43,13 @@ def get_niid_spool(start_date,end_date,SHOW_WINDOW,LINK):
 
     options = webdriver.ChromeOptions()
     options.add_argument(SHOW_WINDOW)
+    # options.add_argument("--headless")  # Run Chrome in headless mode
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-software-rasterizer")
+    options.add_argument("--no-sandbox")  # Required if running on certain environments
+    options.add_argument("--disable-extensions")  # Disable extensions in headless mode
+    options.add_argument("--window-size=1920x1080")  # Set window size to ensure proper rendering
+    options.add_argument("--disable-dev-shm-usage")
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     options.add_argument('--log-level=0')
 
@@ -51,7 +58,7 @@ def get_niid_spool(start_date,end_date,SHOW_WINDOW,LINK):
     service = Service(executable_path=path)
     service.creation_flags = 0x08000000
     driver = webdriver.Chrome(options=options, service=service)
-    driver.set_window_size(1200, 800)
+    driver.set_window_size(1920, 1000)
     # driver.minimize_window()
 
     try:
